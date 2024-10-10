@@ -1,4 +1,4 @@
-# Pushing the Maven project code to VCS
+# Pushing the Application code to Github
 
 ## Prerequisites
 
@@ -18,6 +18,7 @@
 
 ## Step-02: Push the maven project to Github repository
 
+- Launch **VS Code** >> Open your maven project >> **View** menu -> **Terminal** >> Get inside the project folder path.
 - **Initialize the project folder as a git repo**
 
 ```

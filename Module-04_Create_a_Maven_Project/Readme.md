@@ -89,7 +89,7 @@ mvn archetype:generate -DgroupId=com.bindesh.io -DartifactId=BinMavenProject -Da
   - Defines the entry point of the project and creates an executable JAR file.
   - Adds the class path of the project dependencies.
 
-## 05. Testing the Applicati
+## 05. Testing the Application
 
 ```
 mvn test
