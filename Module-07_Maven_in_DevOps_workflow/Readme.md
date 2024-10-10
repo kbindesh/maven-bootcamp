@@ -195,11 +195,35 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 sudo yum install -y git
 ```
 
+### Install Jenkins Plugins
+
+- Navigate to the Jenkins Dashboard >> **Manage Jenkins** >> **Plugins** >> Select **Available** tab
+- Search following plugins and install it:
+
+  - **Maven Integration**
+  - **Maven Invoker**
+  - **Github Plugin**
+
+- Once all the required plugins as installed, verify it from the **Installed** tab of plugin manager.
+
 ## Step-xx: Setup Maven Server
 
 ### Create an EC2 Instance for `Maven Build server`
 
-### Install & Configure Java
+- Sign-in to AWS Account (https://console.aws.amazon.com/).
+- Navigate to EC2 service >> **Launch Instance**.
+- **Name**: maven-build-server
+- **AMI**: Amazon Linux 2 (Kernel 5.10)
+- **Instance Type**: t2.micro
+- **Key Pair**: <create_new_keypair>
+- **VPC/Subnet**: Default
+- **Elastic IP**: Enable
+- **Security Group**: <create_new_sg>
+  - **Ingress**: Allow - 22 (SSH) from Jenkins server
+- **Storage**: 10 GB, GP2 (for this lab)
+- Click on **Launch Instance** button
+
+### Install & Configure `Java`
 
 ```
 # Switch to sudo user
@@ -240,11 +264,11 @@ source ~/.bash_profile
 echo $PATH
 ```
 
-### Install & Configure Apache Maven
+### Install & Configure `Apache Maven`
 
 - Download Apache maven from the official website: https://maven.apache.org/download.cgi
 
-- Download maven:
+- **Download and configure Maven**
 
 ```
 # Move to /opt directory
@@ -263,7 +287,7 @@ sudo ls -l apache-maven-3.9.8
 sudo cd apache-maven-3.9.8
 ```
 
-- Setup home path for Maven
+- **Setup home path for Maven**
 
 ```
 # Update the bash profile with maven path
@@ -286,8 +310,102 @@ echo $PATH
 
 ## Step-xx: Add Maven Build Server as a Jenkins Agent
 
+### Create a new user on Maven build server for Jenkins communication
+
+- Connect to your maven server
+
+```
+# Switch to sudo user
+sudo su -
+
+# List all the existing users
+cat /etc/passwd
+
+# Create a new user
+useradd jenkins
+
+# Set the password for jenkins user
+passwd jenkins
+
+# Add the jenkins user to the sudoers file
+visudo
+
+[Press "G" to go to the end of the file and press "i" to go in insert mode]
+
+## Allow root to run any command anywhere
+root    ALL=(ALL)     ALL
+jenkins ALL=(ALL)     NOPASSWD: ALL
+```
+
+- Enable password based authentication
+
+```
+vi /etc/ssh/sshd_config
+
+[Search for PasswordAuthentication]
+
+# Uncomment the line
+PasswordAuthentication yes
+
+# Refresh sshd service
+service sshd reload
+```
+
+### Create a new node in Jenkins
+
+- Open Jenkins server's Dashboard >> Manage Nodes and Cloud >> New Node
+- **Node Name**: maven_build_server
+- **Permanent Agent**: Enable
+- **# of executors**: 5
+- Remote Root Directory: /home/jenkins
+- Launch Method: Launch Agent via SSH
+  - Host: <private_ip_of_the_maven_server>
+  - Credentials >> Add
+    - Username: jenkinsuser
+    - Password: <your_jenkins_user_passwd>
+    - ID: jenkins
+  - Select the created credentials from the dropdown list.
+- Host key verification strategy: Non verifying verification strategy
+
+### Verify the connection with Maven build agent
+
+- Jenkins Dashboard >> Manage Jenkins >> Nodes >> maven_build_server
+- You should see agent added without a warning sign. Also check in the logs.
+
 ## Step-xx: Configure GitHub Webhook with Jenkins server for CI
 
 ## Step-xx: Build a Java project on Maven server (Jenkins agent)
+
+### Configure Global Configuration settings for Java, Maven and Git
+
+- Navigate to Jenkins server dashboard >> **Manage Jenkins** >> **Tools**
+
+- **JDK**
+
+  - Name: Java-17
+  - JAVA_HOME: /usr/lib/jvm/java-17-amazon-corretto.x86_64
+
+- **Git**
+
+  - Name: Default
+  - Path to git executable: /usr/bin/git
+
+- **Maven** - location of maven installation on maven build agent (not on jenkins server)
+  - Name: Maven_3.9.8
+  - MAVEN_HOME: /opt/apache-maven-3.9.8
+
+### Create a Jenkins job
+
+- **Name**
+- **Type**: Maven project
+- **Restrict where this project can be run**: Enable and mention the name of maven build agent "maven_build_server"
+- **Source Code Management**
+  - Select Git
+    - Repository URL
+    - Branch to build: <branch_name>
+- **Build**
+  - Maven Version
+  - Root POM: pom.xml
+  - Goals and Options: clean install
 
 ## Step-xx: Build a war file on Maven server (Jenkins agent)
