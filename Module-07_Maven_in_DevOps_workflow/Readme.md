@@ -9,11 +9,11 @@
 - Git
 - IDE (in this lab, Visual Studio Code)
 
-## Step-xx: Create a new Maven based Java project using IDE (locally)
+## Step-01: Create a new Maven based Java project using IDE (locally)
 
 - You may refer [Module-04_Create a Maven Project](../Module-04_Create_a_Maven_Project/Readme.md)
 
-## Step-xx: Compile & Validate the Application using Maven
+## Step-02: Compile & Validate the Application using Maven
 
 ```
 # Validate the maven project | Ensure all the required files & folders are present
@@ -23,7 +23,7 @@ mvn validate
 mvn compile
 ```
 
-## Step-xx: Create a new GitHub Repository for Maven project
+## Step-03: Create a new GitHub Repository for Maven project
 
 - Navigate to https://GitHub.com/ >> Sign-in
 - Select **Repositories** tab >> click **New** button
@@ -34,9 +34,9 @@ mvn compile
 
 - Click **Create repository** button
 
-## Step-xx: Push the Maven project code to GitHub
+## Step-04: Push the Maven project code to GitHub
 
-### GitHub `Username & Password based Authentication` to push code
+### Step-4.1: GitHub `Username & Password based Authentication` to push code
 
 - Launch **VS Code** >> Open your maven project >> **View** menu -> **Terminal** >> Get inside the project folder path.
 - **Initialize the project folder as a git repo**
@@ -89,7 +89,7 @@ git push -u origin main
 
 - Verify the application code from GitHub repository.
 
-### (Alternative approach) GitHub `Token based authentication` to push code to GitHub
+### Step-4.2: (Alternative approach) GitHub `Token based authentication` to push code to GitHub
 
 #### Generate GitHub Personal Access Token (PAT)
 
@@ -114,9 +114,9 @@ git remote set-url origin https://<TOKEN>@github.com/<USERNAME>/<REPOSITORY>.git
 [In the preceding command, replace <TOKEN> with your actual Github token, USERNAME with your GitHub username, and REPOSITORY with the name of your repository.]
 ```
 
-## Step-xx: Setup Jenkins Server
+## Step-05: Setup Jenkins Server
 
-### Create an EC2 Instance for `Jenkins server`
+### Step-5.1: Create an EC2 Instance for `Jenkins server`
 
 - Sign-in to AWS Account (https://console.aws.amazon.com/).
 - Navigate to EC2 service >> **Launch Instance**.
@@ -131,7 +131,7 @@ git remote set-url origin https://<TOKEN>@github.com/<USERNAME>/<REPOSITORY>.git
 - **Storage**: 20 GB, GP2 (for this lab)
 - Click on **Launch Instance** button
 
-### Install & Configure Java (prerequisite for Jenkins)
+### Step-5.2: Install & Configure Java (prerequisite for Jenkins)
 
 - Official link for java download: https://www.oracle.com/in/java/technologies/downloads/
 
@@ -143,7 +143,7 @@ sudo yum install -y java-17-amazon-corretto.x86_64
 java --version
 ```
 
-### Install & Configure Jenkins
+### Step-5.3: Install & Configure Jenkins
 
 - Official website link for Jenkins download: https://www.jenkins.io/doc/book/installing/linux/
 
@@ -171,7 +171,7 @@ sudo systemctl status jenkins
 jenkins --version
 ```
 
-### Accessing Jenkins Dashboard
+### Step-5.4: Accessing Jenkins Dashboard
 
 - Launch browser (Chrome) on your local system >> Navigate to http://<your_jenkinsserver_public_ip>:8080
 - Unlock Jenkins by entering temporary password
@@ -189,13 +189,13 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
   - Full Name
   - E-mail Address
 
-### Install Git
+### Step-5.5: Install Git
 
 ```
 sudo yum install -y git
 ```
 
-### Install Jenkins Plugins
+### Step-5.6: Install Jenkins Plugins
 
 - Navigate to the Jenkins Dashboard >> **Manage Jenkins** >> **Plugins** >> Select **Available** tab
 - Search following plugins and install it:
@@ -206,9 +206,9 @@ sudo yum install -y git
 
 - Once all the required plugins as installed, verify it from the **Installed** tab of plugin manager.
 
-## Step-xx: Setup Maven Server
+## Step-06: Setup Maven Server
 
-### Create an EC2 Instance for `Maven Build server`
+### Step-6.1: Create an EC2 Instance for `Maven Build server`
 
 - Sign-in to AWS Account (https://console.aws.amazon.com/).
 - Navigate to EC2 service >> **Launch Instance**.
@@ -223,14 +223,14 @@ sudo yum install -y git
 - **Storage**: 10 GB, GP2 (for this lab)
 - Click on **Launch Instance** button
 
-### Install & Configure `Java`
+### Step-6.2: Install & Configure `Java`
 
 ```
 # Switch to sudo user
 sudo su -
 
 # Install Java as a pre-requisites for jenkins installation
-sudo yum install -y java-17-amazon-corretto.x86_64
+yum install -y java-17-amazon-corretto.x86_64
 
 # To verify java installation
 java --version
@@ -264,7 +264,7 @@ source ~/.bash_profile
 echo $PATH
 ```
 
-### Install & Configure `Apache Maven`
+### Step-6.3: Install & Configure `Apache Maven`
 
 - Download Apache maven from the official website: https://maven.apache.org/download.cgi
 
@@ -275,16 +275,16 @@ echo $PATH
 cd /opt
 
 # Download the maven binary
-sudo wget https://dlcdn.apache.org/maven/maven-3/3.9.8/binaries/apache-maven-3.9.8-bin.tar.gz
+wget https://dlcdn.apache.org/maven/maven-3/3.9.8/binaries/apache-maven-3.9.8-bin.tar.gz
 
 # Unzip the downloaded maven tarball
-sudo tar -xvzf apache-maven-3.9.8-bin.tar.gz
+tar -xvzf apache-maven-3.9.8-bin.tar.gz
 
 # List all the file to see the unzipped maven directory
-sudo ls -l apache-maven-3.9.8
+ls -l apache-maven-3.9.8
 
 # Get inside the maven home directory
-sudo cd apache-maven-3.9.8
+cd apache-maven-3.9.8
 ```
 
 - **Setup home path for Maven**
@@ -308,9 +308,15 @@ source ~/.bash_profile
 echo $PATH
 ```
 
-## Step-xx: Add Maven Build Server as a Jenkins Agent
+### Step-6.4: Install Git
 
-### Create a new user on Maven build server for Jenkins communication
+```
+yum install -y git
+```
+
+## Step-07: Add Maven Build Server as a Jenkins Agent
+
+### Step-7.1: Create a new user on Maven build server for Jenkins communication
 
 - Connect to your maven server
 
@@ -350,8 +356,10 @@ PasswordAuthentication yes
 # Refresh sshd service
 service sshd reload
 ```
+![image](https://github.com/user-attachments/assets/f53c5df3-f477-4579-9f6b-7cc8f84bb3e5)
 
-### Create a new node in Jenkins
+
+### Step-7.2: Create a new node in Jenkins
 
 - Open Jenkins server's Dashboard >> Manage Nodes and Cloud >> New Node
 - **Node Name**: maven_build_server
@@ -361,22 +369,22 @@ service sshd reload
 - Launch Method: Launch Agent via SSH
   - Host: <private_ip_of_the_maven_server>
   - Credentials >> Add
-    - Username: jenkinsuser
+    - Username: jenkins
     - Password: <your_jenkins_user_passwd>
     - ID: jenkins
   - Select the created credentials from the dropdown list.
 - Host key verification strategy: Non verifying verification strategy
 
-### Verify the connection with Maven build agent
+### Step-7.3: Verify the connection with Maven build agent
 
 - Jenkins Dashboard >> Manage Jenkins >> Nodes >> maven_build_server
 - You should see agent added without a warning sign. Also check in the logs.
 
-## Step-xx: Configure GitHub Webhook with Jenkins server for CI
+## Step-08: Configure GitHub Webhook with Jenkins server for CI
 
-## Step-xx: Build a Java project on Maven server (Jenkins agent)
+## Step-09: Build a Java project on Maven server (Jenkins agent)
 
-### Configure Global Configuration settings for Java, Maven and Git
+### Step-9.1: Configure Global Configuration settings for Java, Maven and Git
 
 - Navigate to Jenkins server dashboard >> **Manage Jenkins** >> **Tools**
 
@@ -394,18 +402,28 @@ service sshd reload
   - Name: Maven_3.9.8
   - MAVEN_HOME: /opt/apache-maven-3.9.8
 
-### Create a Jenkins job
+### Step-9.2: Create a Jenkins job
 
-- **Name**
+- **Name**: mvn-build-job-01
 - **Type**: Maven project
 - **Restrict where this project can be run**: Enable and mention the name of maven build agent "maven_build_server"
 - **Source Code Management**
-  - Select Git
-    - Repository URL
+  - Select *Git*
+    - Repository URL: <github_repo_url>
     - Branch to build: <branch_name>
 - **Build**
   - Maven Version
   - Root POM: pom.xml
   - Goals and Options: clean install
 
-## Step-xx: Build a war file on Maven server (Jenkins agent)
+## Step-10: Execute the Jenkins Job to build the Application (on maven-agent machine)
+
+- Go to your Jenkins job created in the previous step and click on Build now button to manually trigger the job as shown in the following diagram:
+
+![image](https://github.com/user-attachments/assets/f87811fc-bad0-46cc-9870-3325372803f6)
+
+- Now, the source code will be cloned from Github to Maven build server (Jenkins agent) and will create a build artifact (.jar file) on the following location: **/home/jenkins/workspace/mvn-build-job-01/target/**
+- List the target directory of your workspace to see the build artifact (.jar file)
+
+![image](https://github.com/user-attachments/assets/d5a527c4-aa7a-4f4d-b984-7c6f12e2f85f)
+
