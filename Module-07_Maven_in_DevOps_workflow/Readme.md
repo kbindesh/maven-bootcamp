@@ -2,12 +2,14 @@
 
 ## Prerequisites
 
-- A Linux machine (EC2 Instance)
-- Java
+- Two Linux machines (here, we're using EC2 instances)
+  - Jenkins Master
+  - Jenkins Agent (Maven build server)
+- Java (17 or above)
 - Jenkins
 - Maven
 - Git
-- IDE (in this lab, Visual Studio Code)
+- IDE (in this lab we're using Visual Studio Code)
 
 ## Step-01: Create a new Maven based Java project using IDE (locally)
 
